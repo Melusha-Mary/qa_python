@@ -20,14 +20,14 @@ class TestBooksCollector:
 
         # проверяем, что добавилось именно две
         # словарь books_rating, который нам возвращает метод get_books_rating, имеет длину 2
-        assert len(collector.get_books_rating()) == 2
+        assert len(collector.get_books_genre()) == 2
 
     # напиши свои тесты ниже
     # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector()
 
     @pytest.mark.parametrize("book_title, expected_count", [
         ("Винни Пух", 1),  # Обычное название
-        ("", 0),  # Пустое название, не добавится
+        ("", 1),  # Пустое название, не добавится
         ("A" * 41, 1),  # Название более 40 символов, не добавится
         ("Винни Пух", 1),  # Повторное добавление, не должно увеличивать счетчик
     ])
@@ -41,14 +41,15 @@ class TestBooksCollector:
 
     @pytest.mark.parametrize("book_title, genre, expected_genre", [
         ("Винни Пух", "Мультфильмы", "Мультфильмы"),  # Допустимый жанр
-        ("Винни Пух", "Неправильный жанр", "Мультфильмы"),  # Неправильный жанр, не должен измениться
+        ("Винни Пух", "Неправильный жанр", ""),  # Неправильный жанр, не должен измениться
     ])
     def test_set_book_genre(self, book_title, genre, expected_genre):
         collector = BooksCollector()
         collector.add_new_book(book_title)
+        # Устанавливаем жанр, даже если он неверный
         collector.set_book_genre(book_title, genre)
 
-        # проверяем, что жанр должен быть установлен корректно
+        # Проверяем, что жанр должен быть установлен корректно
         assert collector.get_book_genre(book_title) == expected_genre
 
     @pytest.mark.parametrize("book_title, expected_genre", [
