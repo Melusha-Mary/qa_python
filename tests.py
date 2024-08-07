@@ -89,6 +89,7 @@ class TestBooksCollector:
 
         books = collector.get_books_with_specific_genre("Детективы")
         # проверяем, что Не должны быть книги с жанром 'Детективы'
+        assert books == []
 
     def test_get_books_genre(self):
         collector = BooksCollector()
