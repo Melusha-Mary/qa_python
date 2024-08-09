@@ -24,11 +24,11 @@ class TestBooksCollector:
     # напиши свои тесты ниже
     # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector()
 
-    @pytest.mark.parametrize("book_title, expected_count", [
-    ("Винни Пух", 1),  # Обычное название
+    @pytest.mark.parametrize("book_title", [
+    ("Винни Пух"),  # Обычное название
     ])
 
-    def test_add_valid_name_book(self, book_title, expected_count):
+    def test_add_valid_name_book(self, book_title):
         collector = BooksCollector()
         collector.add_new_book(book_title)
 
