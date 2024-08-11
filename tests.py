@@ -24,54 +24,51 @@ class TestBooksCollector:
     # напиши свои тесты ниже
     # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector()
 
-    @pytest.mark.parametrize("book_title", [
-    ("Винни Пух"),  # Обычное название
-    ])
-
-    def test_add_valid_name_book(self, book_title):
+    def test_add_valid_name_book(self):
         collector = BooksCollector()
-        collector.add_new_book(book_title)
+        collector.add_new_book("Винни Пух")
 
         # проверяем, что книга добавляется, при валидном наименовании
         assert len(collector.books_genre) == 1
 
+    def test_not_add_double_name_book(self):
+        collector = BooksCollector()
+        collector.add_new_book("Винни Пух")
+        collector.add_new_book("Винни Пух")
+
+        # Повторное добавление, не должно увеличивать счетчик
+        assert len(collector.books_genre) == 1
+
+
     @pytest.mark.parametrize("book_title, expected_count", [
-        ("", 1),  # Пустое название, не добавится
-        ("A" * 41, 1),  # Название более 40 символов, не добавится
-        ("Винни Пух", 1),  # Повторное добавление, не должно увеличивать счетчик
+        ("", 0),  # Пустое название, не добавится
+        ("A" * 41, 0),  # Название более 40 символов, не добавится
     ])
     def test_not_add_invalid_name_book(self, book_title, expected_count):
         collector = BooksCollector()
-        collector.add_new_book("Винни Пух")
         collector.add_new_book(book_title)
 
         # проверяем, что книга не добавляется, при невалидном наименовании
-        assert len(collector.books_genre) == 1
+        assert len(collector.books_genre) == 0
 
-    @pytest.mark.parametrize("book_title, genre, expected_genre", [
-        ("Винни Пух", "Мультфильмы", "Мультфильмы"),  # Допустимый жанр
-        ("Винни Пух", "Неправильный жанр", ""),  # Неправильный жанр, не должен измениться
-    ])
-    def test_set_book_genre(self, book_title, genre, expected_genre):
-        collector = BooksCollector()
-        collector.add_new_book(book_title)
-        # Устанавливаем жанр, даже если он неверный
-        collector.set_book_genre(book_title, genre)
-
-        # Проверяем, что жанр должен быть установлен корректно
-        assert collector.get_book_genre(book_title) == expected_genre
-
-    @pytest.mark.parametrize("book_title, expected_genre", [
-        ("Винни Пух", "Мультфильмы"),  # Проверка успешного получения жанра
-        ("Не существующая книга", None),  # Проверка на несуществующую книгу
-    ])
-    def test_get_book_genre(self, book_title, expected_genre):
+    def test_set_book_genre(self):
         collector = BooksCollector()
         collector.add_new_book("Винни Пух")
         collector.set_book_genre("Винни Пух", "Мультфильмы")
 
-        # проверяем, что жанр книги должен соответствовать ожидаемому
-        assert collector.get_book_genre(book_title) == expected_genre
+        # Проверяем, что жанр должен быть установлен корректно
+        assert collector.get_book_genre("Винни Пух") == "Мультфильмы"
+
+
+    @pytest.mark.parametrize("book_title, expected_genre", [
+        ("Приключения", None),  # Проверка книги без установленного жанра
+        ("Не существующая книга", None),  # Проверка на несуществующую книгу
+    ])
+    def test_get_book_genre_with_incorrect_date(self, book_title, expected_genre):
+        collector = BooksCollector()
+        collector.add_new_book("book_title")
+
+        assert collector.get_book_genre(book_title) is None
 
     def test_get_books_with_specific_genre_cartoon(self):
         collector = BooksCollector()
